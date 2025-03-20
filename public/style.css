@@ -1,0 +1,22 @@
+html {
+    font-family: "Courier new", monospace; 
+    color: white;
+    background-color: black;
+}
+.content {
+    width: 60em;
+    margin: 80 auto;
+    text-align: center;
+}
+a:link {
+    color: forestgreen
+}
+a:hover {
+    color: yellow
+}
+a:visited{
+    color: purple
+}
+ul {
+    list-style: none;
+}

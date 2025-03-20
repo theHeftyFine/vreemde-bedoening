@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Een Vreemde Bedoening</title>
+        <link rel="stylesheet" href="/style.css"/>
+    </head>
+    <body>
+        <div class="content">
+            <h1>There's something happening here</h1>
+            <p>And what it is aint exactly clear</p>
+            <hr>
+            <ul>
+                {{ range .Entries }}
+                <li>
+                    <a href="/blog/{{ . }}">{{ . }}</a>
+                </li>
+                {{end}}
+            </ul>
+        </div>
+    </body>
+</html>
