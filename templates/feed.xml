@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Een Vreemde Bedoening</title>
+    <link href="${HOST}" />
+    <id>${HOST}</id>
+    <updated>2025-03-20T18:30:0</updated>
+    <author>
+        <name>Hefty</name>
+    </author>
+
+</feed>

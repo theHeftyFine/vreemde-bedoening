@@ -1,12 +1,16 @@
 html {
     font-family: "Courier new", monospace; 
     color: white;
-    background-color: black;
+    background-color: #001E00;
 }
 .content {
     width: 60em;
     margin: 80 auto;
+    padding: 10px;
     text-align: center;
+    border: 2px white double;
+    border-radius: 10px;
+    min-height: 80vh;
 }
 a:link {
     color: forestgreen
@@ -19,4 +23,18 @@ a:visited{
 }
 ul {
     list-style: none;
+}
+.header {
+    position: relative;
+    margin: auto 80;
+    display: flex;
+}
+
+.logo img {
+    max-width: 200px;
+    max-height: 200px;
+}
+.title {
+    flex-grow: 80;
+    text-align: center;
 }
