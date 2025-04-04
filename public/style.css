@@ -3,11 +3,11 @@ html {
     color: white;
     background-color: #001E00;
 }
-.content {
-    width: 60em;
-    margin: 80 auto;
-    padding: 10px;
-    text-align: center;
+body {
+    width: 80vw;
+    margin: 5em auto;
+    padding: 2em;
+    /*text-align: center;*/
     border: 2px white double;
     border-radius: 10px;
     min-height: 80vh;
@@ -21,20 +21,12 @@ a:hover {
 a:visited{
     color: purple
 }
-ul {
-    list-style: none;
-}
-.header {
-    position: relative;
-    margin: auto 80;
+.heading {
     display: flex;
+    justify-content: center;
+    text-align: center;
 }
 
-.logo img {
-    max-width: 200px;
-    max-height: 200px;
-}
-.title {
-    flex-grow: 80;
-    text-align: center;
+.heading > img {
+    max-width: 10em;
 }

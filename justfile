@@ -13,3 +13,7 @@ deploy:
 
 run:
     go run .
+
+make HOST:
+    ssh root@{{HOST}}
+    

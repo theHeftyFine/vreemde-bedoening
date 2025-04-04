@@ -1,0 +1,28 @@
+{{ define "base" }}
+<html>
+    <head>
+        <title>Een Vreemde Bedoening</title>
+        <link rel="stylesheet" href="/style.css"/>
+    </head>
+    <body>
+        <header>
+            <div role="heading" class="heading">
+                <img src="/vikingS.png"/>
+                <div role="banner">
+                    <h1>Een vreemde bedoening</h1>
+                    <p>Some strange happenings</p>
+                </div>
+            </div>
+            <hr/>
+            <nav>
+                <a href="/">home</a>
+                <a href="/blog">blog</a>
+            </nav>
+            <hr/>
+        </header>
+        <section>
+            {{ template "content" . }}
+        </section>
+    </body>
+</html>
+{{ end }}

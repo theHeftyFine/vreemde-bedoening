@@ -30,24 +30,31 @@ type IndexRow struct {
 }
 
 func (s *Site) HandleBlog(w http.ResponseWriter, r *http.Request) {
-	params := strings.Split(r.URL.Path, "/")
-	if len(params) != 3 {
+	parts := strings.Split(r.URL.Path, "/")
+	params := []string{}
+	for _, s := range parts {
+		if len(s) > 0 {
+			params = append(params, s)
+		}
+	}
+	if len(params) != 2 {
+		s.HandleIndex(w, r)
 		return
 	}
-	xmllocation := fmt.Sprintf("./static/%s.xml", params[2])
+	xmllocation := fmt.Sprintf("./static/%s.xml", params[1])
 
 	err, entry := UnmarshalEntry(xmllocation)
 
 	blogPost := new(BlogPost)
 	blogPost.Content = template.HTML(entry.Content.Value)
 
-	tmpl, err := template.ParseFiles("./templates/blog_page.html")
+	tmpl, err := template.ParseFiles("./templates/layout/base.html", "./templates/blog_page.html")
 	if err != nil {
 		log.Print("Couldn't parse template")
 		return
 	}
 
-	err = tmpl.Execute(w, blogPost)
+	err = tmpl.ExecuteTemplate(w, "base", blogPost)
 	if err != nil {
 		log.Print("Could't render template")
 		return
@@ -77,10 +84,12 @@ func (s *Site) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	root := "./static"
 	f, err := os.Open(root)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	files, err := f.Readdir(-1)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
@@ -98,14 +107,29 @@ func (s *Site) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	}
 	index := new(Index)
 	index.Entries = entries
-	index.Entries = entries
-	tmpl, err := template.ParseFiles("./templates/index.html")
+	tmpl, err := template.ParseFiles("./templates/layout/base.html", "./templates/index.html")
 	if err != nil {
+		log.Print(err)
 		return
 	}
 
-	err = tmpl.Execute(w, index)
+	err = tmpl.ExecuteTemplate(w, "base", index)
 	if err != nil {
+		log.Print(err)
+		return
+	}
+}
+
+func (s *Site) HandleHome(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("./templates/layout/base.html", "./templates/home.html")
+	if err != nil {
+		fmt.Println("Error parsing template: %s", err)
+		return
+	}
+
+	err = tmpl.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		fmt.Println("Error rendering template: %s", err)
 		return
 	}
 }
@@ -159,30 +183,6 @@ func (s *Site) HandleFeed(w http.ResponseWriter, r *http.Request) {
 	w.Write(out)
 }
 
-func (s *Site) serveSingle(pattern string, filename string) {
-	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filename)
-	})
-}
-
-func (s *Site) StaticFilesHandler(path http.Dir) http.Handler {
-	handler := http.FileServer(path)
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		handler.ServeHTTP(w, r)
-		handler.ServeHTTP(w, r)
-	})
-}
-
-func (s *Site) IndexMiddleHandler(path http.Dir) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			s.HandleIndex(w, r)
-			return
-		}
-		http.FileServer(path).ServeHTTP(w, r)
-	})
-}
-
 func main() {
 
 	host, set := os.LookupEnv("HTTP_HOST")
@@ -193,15 +193,18 @@ func main() {
 	site := new(Site)
 	site.Host = host
 	site.Host = host
-	indexHandler := site.IndexMiddleHandler("./public/")
+	mux := http.NewServeMux()
+	fs := http.FileServer(http.Dir("./public/"))
 
-	http.Handle("/", indexHandler)
-	http.HandleFunc("/blog/", site.HandleBlog)
-	http.HandleFunc("/feed", site.HandleFeed)
+	mux.HandleFunc("GET /", site.HandleHome)
+	mux.HandleFunc("GET /blog/", site.HandleBlog)
+	mux.HandleFunc("GET /feed", site.HandleFeed)
+	mux.Handle("GET /style.css", fs)
+	mux.Handle("GET /vikingS.png", fs)
 
 	// Start the server on port 8080
 	log.Println("Starting server on http://localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
 		log.Fatal("Error starting server: ", err)
 	}
